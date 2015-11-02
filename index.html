@@ -1,0 +1,114 @@
+<!doctype html>
+<html>
+<head>
+	<meta width="device-width" max-scale="1.0">
+	<style type="text/css">
+		#area{
+			left: 0;
+			top: 0;
+			position: absolute;
+			width: 350px;
+			height: 490px;
+			border: 5px solid;
+		}
+
+		.block{
+			width: 70px;
+			height: 70px;
+			position: absolute;
+		}
+
+		.black{
+			background: black;
+		}
+
+		img{
+			max-height: 100%;
+			max-width: 100%;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="area"></div>
+
+	<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>	
+	<script type="text/javascript">
+		jQuery(document).ready(function(){
+			var map = [[2,2,2,1,2],
+								[2,1,2,1,2],
+								[2,1,2,2,2],
+								[2,1,1,1,1],
+								[2,2,2,2,2],
+								[1,1,1,1,2],
+								[0,2,2,2,2]];
+
+			var wScale = Math.floor($('#area').width() / 5);
+			var hScale = Math.floor($('#area').height() / 7);
+			console.log(wScale);
+			for(var i=0;i<7;i++){
+				for(var j=0;j<5;j++){
+					var top = i * hScale;
+					var left = j * wScale;
+					if(map[i][j] === 1)
+						jQuery('#area').append("<div id="+i+"_"+j+" class='block black' style='top:" +top+ "px; left:" +left+ "px;'></div>");
+					else if(map[i][j] === 2){
+						jQuery('#area').append("<div id="+i+"_"+j+" class='block' style='top:" +top+ "px; left:" +left+ "px;'><img src='point.jpg'></div>");
+					}
+				}
+			}
+			jQuery('#area').append("<div id='hunter' class='block' style='top: "+ 6*hScale +"px; left:"+ 0*wScale+"px;'><img src='./pacman.png'></div>");
+
+			$(document).keydown(function(e) {
+			  // console.log(e.keyCode);
+			  var topNow = Math.floor($('#hunter').position().top /hScale);
+			  var leftNow = Math.floor($('#hunter').position().left /wScale);
+			  var direction = {left: '+=0'};
+			  var move = true;
+			  var id = '#'+topNow + '_' + leftNow;
+
+			  $(id).hide();
+			  // console.log($('#hunter').top());
+			  switch(e.keyCode){
+			  	case 37: //left
+			  		direction = {left:'-='+wScale};
+			  		if(map[topNow][leftNow-1] === 1)
+			  			move = false;
+			  		else
+			  			move = true;
+			  		break;
+			  	case 38: //up
+			  		direction = {top:'-='+hScale};
+			  		if(map[topNow-1][leftNow] === 1)
+			  			move = false;
+			  		else
+			  			move = true;
+			  		break;
+			  	case 39: //right
+			  		direction = {left:'+='+wScale};
+			  		if(map[topNow][leftNow +1] === 1)
+			  			move = false;
+			  		else
+			  			move = true;
+			  		break;
+			  	case 40: //down
+			  		direction = {top:'+='+hScale};
+			  		if(map[topNow +1][leftNow] === 1)
+			  			move = false;
+			  		else
+			  			move = true;
+			  		break;
+			  	default:
+			  		break;
+			  }
+			  if(move === false)
+			  	$('#hunter').animate({left: '+=0'}, 0);
+			  else
+			  	$('#hunter').animate(direction, 50);
+			});
+
+			// console.log(width);
+		});
+	</script>
+</body>
+</html>
